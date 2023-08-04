@@ -1,0 +1,291 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <title>TES - Venturo Camp Tahap 2</title>
+    </head>
+    <body onload="Menu()">
+        <div class="container">
+            <div class="row">
+                <div class="card">
+                    <div class="card-header">
+                        Venturo - Laporan Penjualan Tahunan per Menu
+                    </div>
+                    <div class="card-body">
+                        <form action="">
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="form-group">
+                                        <select id="myselect" class="form-control" name="tahun">
+                                            <option value="">Pilih Tahun</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <button class="btn btn-primary" onclick="Data()" id="tampil" type="button" disabled >Tampilkan</button>
+                                    <div id="totalhasil" margin-top: 20px></div>
+                                </div>
+                                    <div class="col-4">
+                                    <a href="http://tes-web.landa.id/intermediate/menu" target="_blank" rel="Array Menu" class="btn btn-secondary">
+                                        Json Menu
+                                    </a>
+                                    <a href="http://tes-web.landa.id/intermediate/transaksi?tahun=2022" target="_blank" rel="Array Transaksi" class="btn btn-secondary">
+                                        Json Transaksi
+                                    </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered mt-3">
+                                <thead class="table-dark " id="table">
+                                <tr>
+                                    <th style="text-align: center;">Menu</th>
+                                    <th style="text-align: center;">Jan</th>
+                                    <th style="text-align: center;">Feb</th>
+                                    <th style="text-align: center;">Mar</th>
+                                    <th style="text-align: center;">Apl</th>
+                                    <th style="text-align: center;">Mei</th>
+                                    <th style="text-align: center;">jun</th>
+                                    <th style="text-align: center;">jul</th>
+                                    <th style="text-align: center;">Ags</th>
+                                    <th style="text-align: center;">Sep</th>
+                                    <th style="text-align: center;">Okt</th>
+                                    <th style="text-align: center;">Nov</th>
+                                    <th style="text-align: center;">Des</th>
+                                    <th style="text-align: center;">Total</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbody">
+                
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <script>
+            let arrDate = []
+            let date = new Date()
+            let yNow = date.getFullYear() - 1
+            let yThen = date.getFullYear() - 2        
+                arrDate.push(yNow, yThen)
+                arrDate.sort();
+                arrDate.forEach((e) => {            
+                    var o = new Option(e, e);        
+                        $("#myselect").append(o);
+                    })
+    
+                $('#myselect').on('change', () => {            
+                    if($("#myselect option:selected").val() == ""){
+                        $('#tampil').attr('disabled', true)                
+                    }else{
+                        $('#tampil').removeAttr('disabled')
+                    }
+                })
+    
+            let menu = []
+            function Menu(){
+                $.ajax({
+                url : "./koneksi.php",
+                type: "POST",
+                data: {               
+                  cari : "Menu"           
+                },
+                dataType: 'text',
+                success : (result) => {
+                    console.log(result);
+                    let res = JSON.parse(result)                                      
+                    res.forEach(elem => {
+                        menu.push(elem)
+                    });                          
+                },
+                error : (err) => {
+                    console.log(err);
+                }
+            })
+            }
+    
+            function Data(){
+                $('#totalhasil').html("")
+                tbody.innerHTML = ""
+                let data1 = $("#myselect option:selected").val()
+                console.log(data1);
+                $.ajax({
+                    url : "./koneksi.php",
+                    type: "POST",
+                    data: {
+                      tahun: data1,   
+                      cari : "Data"           
+                    },
+                    dataType: 'text',
+                    success : (result) => {
+                        let tbody = document.getElementById('tbody')                
+                        tbody.innerHTML = ''                     
+                        let res = JSON.parse(result)
+                        console.log(result);                
+        
+                        let laporan = {
+                            1 : {},
+                            2 : {},
+                            3 : {},
+                            4 : {},
+                            5 : {},
+                            6 : {},
+                            7 : {},
+                            8 : {},
+                            9 : {},
+                            10 : {},
+                            11 : {},
+                            12 : {},
+                            'totalAtas' : 0,
+                            'totalBawah' : 0
+                        }
+
+                        let laporanMenu = {}
+                        menu.forEach(elem => {
+                            let nama = elem.menu
+                            laporanMenu[nama] = {
+                                1:0,
+                                2:0,
+                                3:0,
+                                4:0,
+                                5:0,
+                                6:0,
+                                7:0,
+                                8:0,
+                                9:0,
+                                10:0,
+                                11:0,
+                                12:0,
+                                "totalKanan" : 0
+                            }
+                        })
+
+                        console.log(laporan)
+                        Object.keys(laporan).forEach(key => {
+                            menu.forEach(elem => {
+                            let nama = elem.menu
+                            let kategori = elem.kategori
+                                laporan[key][nama] = {
+                                    'menu' : nama,
+                                    'kategori' : kategori,
+                                    'jumlah' : 0 ,
+                                    'total' : 0,
+                                }                             
+                            })
+                        })
+        
+                                        
+                        res.forEach(elem => {
+                            let bulan = parseInt(elem.tanggal.split('-')[1])                    
+                            let jumlah = laporan[bulan][elem.menu]['jumlah']
+                            let total = laporan[bulan][elem.menu]['total']
+                            let nama = laporan[bulan][elem.menu]['menu']
+                            let kategori = laporan[bulan][elem.menu]['kategori']
+                            let lapTotal = laporan['totalBawah']
+                            let totalAtas = laporan['totalAtas']
+                            if(elem.menu == laporan[bulan][elem.menu]['menu']){
+                                laporan[bulan][elem.menu] = {
+                                    'menu' : nama,
+                                    'kategori' : kategori,
+                                    'jumlah' : jumlah + 0,
+                                    'total' : total + elem.total,
+                                    'totalAtas' : total - elem.jumlah
+                                }                        
+                            }
+
+                            laporanMenu[elem.menu][bulan] = laporanMenu[elem.menu][bulan] + elem.total
+                            laporanMenu[elem.menu]['totalKanan'] = laporanMenu[elem.menu]['totalKanan'] + elem.total
+
+                            laporan['totalBawah'] = lapTotal + elem.total
+                            laporan['totalAtas'] = lapTotal + elem.bulan
+                        })    
+                        
+                        console.log(menu);
+                        console.log(laporan[1]);
+                        console.log(laporanMenu);
+        
+                        let i = 0
+                    let row = tbody.insertRow()
+                    let cell = row.insertCell()
+                    cell.setAttribute('style', 'background-color : grey')
+                    cell.setAttribute('colspan', '14')
+                    cell.innerText = "Makanan"
+                    menu.forEach(elem => {
+                        
+                        let row1 = tbody.insertRow()
+                        let cell1 = row1.insertCell(0)
+                        cell1.innerText += elem.menu
+                        i = i + 1
+                        if(i == 5){
+                            let row2 = tbody.insertRow()
+                            let cell2 = row2.insertCell()
+                            cell2.setAttribute('style', 'background-color : grey')
+                            cell2.setAttribute('colspan', '14')
+                            cell2.innerText = "Minuman"
+                        }              
+                        Object.keys(laporan).forEach(key => {
+                            if(laporan[key][elem.menu] != undefined){
+                                let total = laporan[key][elem.menu]['total']
+                                let laporanMenu = laporan[key][elem.menu]['totalKanan']
+                                
+                                if(total == 0){
+                                    let cell3 = row1.insertCell()
+                                    cell3.setAttribute('style', 'text-align:right')
+                                    cell3.innerText += ""
+                                }else{
+                                    let cell3 = row1.insertCell()
+                                    cell3.setAttribute('style', 'text-align:right')
+                                    cell3.innerText += total
+                                }
+                            }                    
+                        })
+                        Object.keys(laporan).forEach(key => {
+                            if(laporan[key][elem.menu] != undefined){
+                                let laporanMenu = laporan[key][elem.menu]['totalKanan']
+                                
+                                if(laporanMenu == 0){
+                                    let cell3 = row1.insertCell()
+                                    cell3.setAttribute('style', 'text-align:right')
+                                    cell3.innerText += ""
+                                }else{
+                                    let cell3 = row1.insertCell()
+                                    cell3.setAttribute('style', 'text-align:right')
+                                    cell3.innerText += laporanMenu
+                                }
+                            }                    
+                        })
+                    })
+    
+                        let row1 = tbody.insertRow()
+                        row1.setAttribute('class', 'table-dark')
+                        let cell3 = row1.insertCell()
+                        cell3.setAttribute('colspan', '13')
+                        cell3.innerText = 'total :'
+                        let cell4 = row1.insertCell()
+                        cell4.innerText += laporan['totalBawah']
+                        $('#table').removeAttr('style')
+                        
+    
+                        console.log(laporan)
+    
+                    },
+                    error : (err) => {
+                        console.log(err);
+                    }
+                })
+                }
+    
+        </script>
+    </body>
+</html>
