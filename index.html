@@ -200,12 +200,12 @@
                                     'kategori' : kategori,
                                     'jumlah' : jumlah + 0,
                                     'total' : total + elem.total,
-                                    'totalAtas' : total - elem.jumlah
+                                    'totalAtas' : total + elem.jumlah
                                 }                        
                             }
-
                             laporanMenu[elem.menu][bulan] = laporanMenu[elem.menu][bulan] + elem.total
                             laporanMenu[elem.menu]['totalKanan'] = laporanMenu[elem.menu]['totalKanan'] + elem.total
+
 
                             laporan['totalBawah'] = lapTotal + elem.total
                             laporan['totalAtas'] = lapTotal + elem.bulan
@@ -237,7 +237,6 @@
                         Object.keys(laporan).forEach(key => {
                             if(laporan[key][elem.menu] != undefined){
                                 let total = laporan[key][elem.menu]['total']
-                                let laporanMenu = laporan[key][elem.menu]['totalKanan']
                                 
                                 if(total == 0){
                                     let cell3 = row1.insertCell()
@@ -247,21 +246,6 @@
                                     let cell3 = row1.insertCell()
                                     cell3.setAttribute('style', 'text-align:right')
                                     cell3.innerText += total
-                                }
-                            }                    
-                        })
-                        Object.keys(laporan).forEach(key => {
-                            if(laporan[key][elem.menu] != undefined){
-                                let laporanMenu = laporan[key][elem.menu]['totalKanan']
-                                
-                                if(laporanMenu == 0){
-                                    let cell3 = row1.insertCell()
-                                    cell3.setAttribute('style', 'text-align:right')
-                                    cell3.innerText += ""
-                                }else{
-                                    let cell3 = row1.insertCell()
-                                    cell3.setAttribute('style', 'text-align:right')
-                                    cell3.innerText += laporanMenu
                                 }
                             }                    
                         })
@@ -276,7 +260,6 @@
                         cell4.innerText += laporan['totalBawah']
                         $('#table').removeAttr('style')
                         
-    
                         console.log(laporan)
     
                     },
