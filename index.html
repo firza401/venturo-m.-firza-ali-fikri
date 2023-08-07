@@ -147,7 +147,6 @@
                             10 : {},
                             11 : {},
                             12 : {},
-                            'totalAtas' : 0,
                             'totalBawah' : 0
                         }
 
@@ -198,9 +197,8 @@
                                 laporan[bulan][elem.menu] = {
                                     'menu' : nama,
                                     'kategori' : kategori,
-                                    'jumlah' : jumlah + 0,
+                                    'jumlah' : jumlah + 1,
                                     'total' : total + elem.total,
-                                    'totalAtas' : total + elem.jumlah
                                 }                        
                             }
                             laporanMenu[elem.menu][bulan] = laporanMenu[elem.menu][bulan] + elem.total
@@ -213,7 +211,7 @@
                         
                         console.log(menu);
                         console.log(laporan[1]);
-                        console.log(laporanMenu);
+                        console.log(laporanMenu)
         
                         let i = 0
                     let row = tbody.insertRow()
